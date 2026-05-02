@@ -1,38 +1,25 @@
-# Express App with CI/CD
+# Node.js CI/CD Pipeline to Railway
 
-## 🚀 Live Demo
+Automated deployment pipeline for Node.js application.
 
-**Application URL:** https://your-app.up.railway.app
+## Live Demo
+Application deployed on Railway:
+https://node-pipeline-production.up.railway.app
 
-*(Замени на свою реальную ссылку от Railway)*
-
-## 📋 Description
-
-Simple Express.js application with automated CI/CD pipeline using GitHub Actions and Docker.
-
-## 🛠️ Tech Stack
-
-- Node.js + Express
-- Docker & Docker Compose
-- GitHub Actions (CI/CD)
-- Docker Hub (container registry)
-- Railway (cloud deployment)
-
-## 🔄 CI/CD Pipeline
-
-This project uses GitHub Actions for automatic deployment:
-
-1. **Build Job:**
-   - Builds Docker image
-   - Pushes to Docker Hub
-   
-2. **Deploy Job:**
-   - Automatically deploys to Railway
-   - Triggers on every push to `main` branch
-
-## 📦 Local Development
-
-### Using Docker Compose:
-
-```bash
+## Local Setup
 docker compose up -d
+
+Open http://localhost:3000
+
+## Auto-deployment
+On every git push to main branch:
+1. GitHub Actions builds Docker image
+2. Image is pushed to Docker Hub
+3. Railway automatically deploys new version
+
+## Technologies
+- Node.js + Express
+- Docker + Docker Compose
+- GitHub Actions (CI/CD)
+- Watchtower (local auto-update)
+- Railway (cloud hosting)

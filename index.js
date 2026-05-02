@@ -1,5 +1,7 @@
 ﻿const express = require('express');
 const app = express();
 const port = 3000;
-app.get('/', (req, res) => { res.send('Hello from Express App! Version 2.0'); });
+app.get('/', (req, res) => {
+  res.send('? Node.js App v2.0<br><br>Auto-updated by Watchtower!');
+});
 app.listen(port, () => { console.log("App running on port " + port); });

@@ -2,7 +2,7 @@
 
 services:
   express-app:
-    image: YOUR_DOCKER_USERNAME/express-app:main
+    image: ov3rsiz3/express-app:main
     ports:
       - "3000:3000"
     restart: always

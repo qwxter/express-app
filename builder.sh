@@ -1,58 +1,48 @@
 #!/bin/bash
 
-# Проверяем, что переданы оба аргумента
+# Проверяем, передано ли два аргумента
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 <github-repo> <dockerhub-repo>"
-    echo "Example: $0 mluukkai/express_app mluukkai/testing"
+    echo "❌ Ошибка: нужно 2 аргумента!"
+    echo "Использование: ./builder.sh <github-repo> <dockerhub-repo>"
+    echo "Пример: ./builder.sh mluukkai/express_app mluukkai/testing"
     exit 1
 fi
 
+# Получаем аргументы
 GITHUB_REPO=$1
 DOCKERHUB_REPO=$2
 
-# Создаём временную папку для клонирования
-TEMP_DIR=$(mktemp -d)
-echo "📁 Creating temporary directory: $TEMP_DIR"
-
-# Клонируем репозиторий
-echo "🔄 Cloning https://github.com/$GITHUB_REPO..."
-git clone "https://github.com/$GITHUB_REPO.git" "$TEMP_DIR"
+echo "📥 Клонируем репозиторий: $GITHUB_REPO"
+git clone "https://github.com/$GITHUB_REPO.git" temp-repo
 
 if [ $? -ne 0 ]; then
-    echo "❌ Failed to clone repository"
+    echo "❌ Ошибка при клонировании репозитория"
     exit 1
 fi
 
-# Переходим в папку с репозиторием
-cd "$TEMP_DIR"
+cd temp-repo
 
-# Проверяем, что Dockerfile существует
-if [ ! -f Dockerfile ]; then
-    echo "❌ Dockerfile not found in repository root"
-    exit 1
-fi
-
-# Собираем Docker образ
-echo "🔨 Building Docker image..."
+echo "🐳 Собираем Docker образ..."
 docker build -t "$DOCKERHUB_REPO" .
 
 if [ $? -ne 0 ]; then
-    echo "❌ Failed to build Docker image"
+    echo "❌ Ошибка при сборке Docker образа"
+    cd ..
+    rm -rf temp-repo
     exit 1
 fi
 
-# Пушим образ в Docker Hub
-echo "📤 Pushing to Docker Hub..."
+echo "📤 Публикуем образ в Docker Hub: $DOCKERHUB_REPO"
 docker push "$DOCKERHUB_REPO"
 
 if [ $? -ne 0 ]; then
-    echo "❌ Failed to push to Docker Hub"
+    echo "❌ Ошибка при публикации образа"
+    cd ..
+    rm -rf temp-repo
     exit 1
 fi
 
-# Очищаем временную папку
-echo "🧹 Cleaning up..."
-cd /
-rm -rf "$TEMP_DIR"
+cd ..
+rm -rf temp-repo
 
-echo "✅ Successfully built and pushed $DOCKERHUB_REPO"
+echo "✅ Готово! Образ $DOCKERHUB_REPO успешно опубликован!"
